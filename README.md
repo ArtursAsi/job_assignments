@@ -3,7 +3,6 @@ Clone project
 
 git clone https://github.com/ArtursAsi/job_assignments
 
-Below are just examples in every exercise. You can think of your own if needed.
 
 ### Description
 
