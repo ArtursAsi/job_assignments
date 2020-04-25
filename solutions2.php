@@ -2,6 +2,7 @@
 
 function maxProfit(array $pricesAndPurchases): int
 {
+
     $sum = 0;
     $expenses = 0;
     $profits = [];
@@ -35,58 +36,117 @@ function maxProfit(array $pricesAndPurchases): int
 
 function stringCost(string $a, string $b, int $insertionCost, int $deletionCost, int $replacementCost): int
 {
+    $totalCost = 0;
 
-    $replacement = ($insertionCost + $deletionCost < $replacementCost);
     $insertionCount = 0;
     $deletionCount = 0;
     $replacementCount = 0;
 
-    $aSplit = str_split($a);
-    $bSplit = str_split($b);
+    $expensive = $replacementCost > $insertionCost + $deletionCost;
+    $cheap = $replacementCost <= $insertionCost + $deletionCost;
+
+    $aChars = str_split($a);
+    $bChars = str_split($b);
 
     $aLength = strlen($a);
     $bLength = strlen($b);
 
     $bothLength = (max($aLength, $bLength));
 
-
     if ($aLength === $bLength) {
-        for ($i = 0; $i < $bothLength; $i++) {
-            if ($aSplit[$i] !== $bSplit[$i]) {
-                $aSplit[$i] = $bSplit[$i];
-                $replacementCount++;
+
+        if ($cheap)
+            for ($i = 0; $i < $bothLength - 1; $i++) {
+
+                if ($aChars[$i] !== $bChars[$i]) {
+                    $aChars[$i] = $bChars[$i];
+                    $replacementCount++;
+                }
+
             }
+        $totalCost = $replacementCount * $replacementCost;
+
+        if ($expensive) {
+            for ($i = 0; $i < $bothLength; $i++) {
+
+                if ($aChars[$i] !== $bChars[$i]) {
+                    $aChars[$i] = $bChars[$i];
+                    $deletionCount++;
+                    $insertionCount++;
+                }
+            }
+            $totalCost = ($insertionCount * $insertionCost) + ($deletionCount * $deletionCost);
         }
+
     }
 
     if ($aLength < $bLength) {
-        for ($i = 0; $i < $bothLength - 1; $i++) {
-            if ($aSplit[$i] !== $bSplit[$i]) {
-                $aSplit[$i] = $bSplit[$i];
-                $replacementCount++;
+
+        $length = $bLength - $aLength;
+
+        if ($replacementCost === 0) {
+            $replacementCost += 1;
+        }
+        if ($cheap) {
+            for ($i = 0; $i < $bothLength - 1; $i++) {
+
+                if ($aChars[$i] !== $bChars[$i]) {
+                    $aChars[$i] = $bChars[$i];
+                    $replacementCount++;
+                }
+
             }
-            $length = $bLength - $aLength;
-            $deletionCount = $length;
+
+            $totalCost = ($replacementCount + $length) * $replacementCost;
+        }
+        if ($expensive) {
+            for ($i = 0; $i < $bothLength - 1; $i++) {
+
+                if ($aChars[$i] !== $bChars[$i]) {
+                    $aChars[$i] = $bChars[$i];
+                    $deletionCount++;
+                    $insertionCount++;
+                }
+            }
+
+            $totalCost = (($insertionCount + $length) * $insertionCost) + ($deletionCount * $deletionCost);
         }
     }
+
+
     if ($aLength > $bLength) {
-        for ($i = 0; $i < $bothLength; $i++) {
-            if ($aSplit[$i] !== $bSplit[$i]) {
-                $aSplit[$i] = $bSplit[$i];
-                $replacementCount++;
-            }
-            $length = $aLength - $bLength;
-            $insertionCount = $length;
+        if ($replacementCost === 0) {
+            $replacementCost += 1;
+        }
+        $length = $aLength - $bLength;
 
+        if ($cheap) {
+            for ($i = 0; $i < $bothLength - 1; $i++) {
+
+                if ($aChars[$i] !== $bChars[$i]) {
+                    $aChars[$i] = $bChars[$i];
+                    $replacementCount++;
+                }
+            }
+
+            $totalCost = ($replacementCount + $length) * $replacementCost;
         }
 
+        if ($expensive) {
+
+            for ($i = 0; $i < $bothLength - 1; $i++) {
+
+                if ($aChars[$i] !== $bChars[$i]) {
+                    $aChars[$i] = $bChars[$i];
+                    $deletionCount++;
+                    $insertionCount++;
+                }
+            }
+
+            $totalCost = (($deletionCount + $length) * $deletionCost) + ($insertionCount * $insertionCost);
+        }
     }
-
-    $insert = $insertionCount * $insertionCost;
-    $delete = $deletionCount * $deletionCost;
-    $replace = $replacementCount * $replacementCost;
-
-    return $insert + $delete + $replace;
+    return $totalCost;
 }
 
 

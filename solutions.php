@@ -1,8 +1,13 @@
 <?php
 
-function checkArray(array $numbers): array
+function findOddEvenPair(array $numbers): int
 {
+    $sum = 0;
+    $evenArray = [];
+    $oddArray = [];
+
     $last = array_key_last($numbers);
+
     if ($numbers[0] % 2 === 0 && $numbers[$last] % 2 === 0) {
         $numbers[$last] += 1;
     }
@@ -10,14 +15,6 @@ function checkArray(array $numbers): array
     if ($numbers[0] % 2 !== 0 && $numbers[$last] % 2 !== 0) {
         $numbers[$last] += 1;
     }
-    return $numbers;
-}
-
-function findOddEvenPair(array $numbers): int
-{
-    $sum = 0;
-    $evenArray = [];
-    $oddArray = [];
 
     for ($i = 0; $i < count($numbers); $i++) {
         if ($i % 2 === 0) {
